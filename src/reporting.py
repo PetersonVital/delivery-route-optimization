@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
+from chart_utils import create_figure, format_axis, annotate_bars, save_figure
 
 
 PROCESSED_DATA_PATH = "data/processed/deliveries_cleaned.csv"
@@ -40,65 +41,99 @@ def plot_route_distance_comparison(route_comparison_df):
     labels = ["Original Route", "Optimized Route"]
     values = [original_distance, optimized_distance]
 
-    plt.figure(figsize=(8, 5))
-    plt.bar(labels, values)
-    plt.title("Original vs Optimized Route Distance")
-    plt.ylabel("Distance (km)")
-    plt.tight_layout()
-    plt.savefig(DISTANCE_COMPARISON_FIGURE)
-    plt.close()
+    fig, ax = create_figure(figsize=(8, 5))
+    bars = ax.bar(labels, values, width=0.6)
+
+    format_axis(
+        ax,
+        title="Original vs Optimized Route Distance",
+        subtitle="Comparison of route length before and after optimization",
+        ylabel="Distance (km)",
+    )
+
+    annotate_bars(ax, fmt="{:.1f}", suffix=" km")
+    save_figure(fig, DISTANCE_COMPARISON_FIGURE)
 
 
 def plot_distance_reduction(route_comparison_df):
     reduction_percent = route_comparison_df.loc[0, "distance_reduction_percent"]
 
-    plt.figure(figsize=(6, 5))
-    plt.bar(["Distance Reduction"], [reduction_percent])
-    plt.title("Distance Reduction Percentage")
-    plt.ylabel("Reduction (%)")
-    plt.tight_layout()
-    plt.savefig(DISTANCE_REDUCTION_FIGURE)
-    plt.close()
+    fig, ax = create_figure(figsize=(6, 5))
+    bars = ax.bar(["Distance Reduction"], [reduction_percent], width=0.55)
+
+    format_axis(
+        ax,
+        title="Distance Reduction Percentage",
+        subtitle="Relative improvement after route optimization",
+        ylabel="Reduction (%)",
+        y_as_percent=True,
+    )
+
+    annotate_bars(ax, fmt="{:.1f}", suffix="%")
+    save_figure(fig, DISTANCE_REDUCTION_FIGURE)
 
 
 def plot_overall_delay_rate(summary_metrics_df):
     delay_rate = summary_metrics_df.loc[0, "delay_rate_percent"]
 
-    plt.figure(figsize=(6, 5))
-    plt.bar(["Delay Rate"], [delay_rate])
-    plt.title("Overall Delay Rate")
-    plt.ylabel("Rate (%)")
-    plt.tight_layout()
-    plt.savefig(DELAY_RATE_FIGURE)
-    plt.close()
+    fig, ax = create_figure(figsize=(6, 5))
+    bars = ax.bar(["Delay Rate"], [delay_rate], width=0.55)
+
+    format_axis(
+        ax,
+        title="Overall Delay Rate",
+        subtitle="Share of deliveries classified as delayed in the simulated operation",
+        ylabel="Delay Rate (%)",
+        y_as_percent=True,
+    )
+
+    annotate_bars(ax, fmt="{:.1f}", suffix="%")
+    save_figure(fig, DELAY_RATE_FIGURE)
 
 
 def plot_average_cost_by_vehicle(processed_df):
-    avg_cost = processed_df.groupby("vehicle_type")["original_cost_brl"].mean().sort_values()
+    avg_cost = (
+        processed_df.groupby("vehicle_type")["original_cost_brl"]
+        .mean()
+        .sort_values(ascending=True)
+        .reset_index()
+    )
 
-    plt.figure(figsize=(8, 5))
-    plt.bar(avg_cost.index, avg_cost.values)
-    plt.title("Average Cost by Vehicle Type")
-    plt.xlabel("Vehicle Type")
-    plt.ylabel("Average Cost (BRL)")
-    plt.tight_layout()
-    plt.savefig(AVG_COST_BY_VEHICLE_FIGURE)
-    plt.close()
+    fig, ax = create_figure(figsize=(8, 5))
+    bars = ax.bar(avg_cost["vehicle_type"], avg_cost["original_cost_brl"], width=0.6)
+
+    format_axis(
+        ax,
+        title="Average Cost by Vehicle Type",
+        subtitle="Average operational cost segmented by transportation mode",
+        xlabel="Vehicle Type",
+        ylabel="Average Cost (BRL)",
+        y_as_currency=True,
+    )
+
+    annotate_bars(ax, fmt="{:.1f}", prefix="R$ ")
+    save_figure(fig, AVG_COST_BY_VEHICLE_FIGURE)
 
 
 def plot_deliveries_by_city(city_summary_df):
-    city_labels = city_summary_df["city"] + " - " + city_summary_df["state"]
-    deliveries = city_summary_df["deliveries"]
+    plot_df = city_summary_df.sort_values("deliveries", ascending=False).copy()
+    plot_df["city_label"] = plot_df["city"] + " - " + plot_df["state"]
 
-    plt.figure(figsize=(10, 6))
-    plt.bar(city_labels, deliveries)
-    plt.title("Number of Deliveries by City")
-    plt.xlabel("City")
-    plt.ylabel("Deliveries")
-    plt.xticks(rotation=45, ha="right")
-    plt.tight_layout()
-    plt.savefig(DELIVERIES_BY_CITY_FIGURE)
-    plt.close()
+    fig, ax = create_figure(figsize=(10, 6))
+    bars = ax.bar(plot_df["city_label"], plot_df["deliveries"], width=0.65)
+
+    format_axis(
+        ax,
+        title="Number of Deliveries by City",
+        subtitle="Distribution of simulated deliveries across covered cities",
+        xlabel="City",
+        ylabel="Deliveries",
+        rotate_xticks=35,
+        integer_y=True,
+    )
+
+    annotate_bars(ax, fmt="{:.0f}")
+    save_figure(fig, DELIVERIES_BY_CITY_FIGURE)
 
 
 def build_final_report_metrics(processed_df, route_comparison_df, summary_metrics_df):
