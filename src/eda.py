@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from chart_utils import create_figure, format_axis, annotate_bars, save_figure
 
 
 RAW_DATA_PATH = "data/raw/deliveries_simulated.csv"
@@ -95,14 +96,33 @@ def create_summary_metrics(df):
 
 
 def plot_distance_distribution(df):
-    plt.figure(figsize=(10, 6))
-    plt.hist(df["distance_km"], bins=20, edgecolor="black")
-    plt.title("Distribution of Delivery Distance")
-    plt.xlabel("Distance (km)")
-    plt.ylabel("Number of Deliveries")
-    plt.tight_layout()
-    plt.savefig(os.path.join(FIGURES_DIR, "distance_distribution.png"))
-    plt.close()
+    fig, ax = create_figure(figsize=(10, 6))
+
+    counts, bins, patches = ax.hist(
+        df["distance_km"],
+        bins=18,
+        edgecolor="white",
+        linewidth=1.0,
+        alpha=0.9,
+    )
+
+    mean_value = df["distance_km"].mean()
+    median_value = df["distance_km"].median()
+
+    ax.axvline(mean_value, linestyle="--", linewidth=1.5, label=f"Mean: {mean_value:.1f} km")
+    ax.axvline(median_value, linestyle=":", linewidth=1.8, label=f"Median: {median_value:.1f} km")
+
+    format_axis(
+        ax,
+        title="Distribution of Delivery Distance",
+        subtitle="Histogram with central tendency markers for route planning analysis",
+        xlabel="Distance (km)",
+        ylabel="Number of Deliveries",
+        integer_y=True,
+    )
+
+    ax.legend(loc="upper right")
+    save_figure(fig, os.path.join(FIGURES_DIR, "distance_distribution.png"))
 
 
 def plot_average_time_by_traffic(df):
@@ -110,29 +130,46 @@ def plot_average_time_by_traffic(df):
         df.groupby("traffic_level")["estimated_time_min"]
         .mean()
         .reindex(["Low", "Medium", "High"])
+        .reset_index()
     )
 
-    plt.figure(figsize=(8, 5))
-    plt.bar(avg_time.index, avg_time.values)
-    plt.title("Average Estimated Time by Traffic Level")
-    plt.xlabel("Traffic Level")
-    plt.ylabel("Estimated Time (minutes)")
-    plt.tight_layout()
-    plt.savefig(os.path.join(FIGURES_DIR, "average_time_by_traffic.png"))
-    plt.close()
+    fig, ax = create_figure(figsize=(8, 5))
+    bars = ax.bar(avg_time["traffic_level"], avg_time["estimated_time_min"], width=0.6)
+
+    format_axis(
+        ax,
+        title="Average Estimated Time by Traffic Level",
+        subtitle="Delivery time increases as traffic conditions worsen",
+        xlabel="Traffic Level",
+        ylabel="Estimated Time (minutes)",
+    )
+
+    annotate_bars(ax, fmt="{:.1f}", suffix=" min")
+    save_figure(fig, os.path.join(FIGURES_DIR, "average_time_by_traffic.png"))
 
 
 def plot_average_cost_by_vehicle(df):
-    avg_cost = df.groupby("vehicle_type")["original_cost_brl"].mean().sort_values()
+    avg_cost = (
+        df.groupby("vehicle_type")["original_cost_brl"]
+        .mean()
+        .sort_values(ascending=True)
+        .reset_index()
+    )
 
-    plt.figure(figsize=(8, 5))
-    plt.bar(avg_cost.index, avg_cost.values)
-    plt.title("Average Cost by Vehicle Type")
-    plt.xlabel("Vehicle Type")
-    plt.ylabel("Average Cost (BRL)")
-    plt.tight_layout()
-    plt.savefig(os.path.join(FIGURES_DIR, "average_cost_by_vehicle.png"))
-    plt.close()
+    fig, ax = create_figure(figsize=(8, 5))
+    bars = ax.bar(avg_cost["vehicle_type"], avg_cost["original_cost_brl"], width=0.6)
+
+    format_axis(
+        ax,
+        title="Average Cost by Vehicle Type",
+        subtitle="Operational cost varies by transportation mode",
+        xlabel="Vehicle Type",
+        ylabel="Average Cost (BRL)",
+        y_as_currency=True,
+    )
+
+    annotate_bars(ax, fmt="{:.1f}", prefix="R$ ")
+    save_figure(fig, os.path.join(FIGURES_DIR, "average_cost_by_vehicle.png"))
 
 
 def plot_delay_rate_by_traffic(df):
@@ -140,17 +177,24 @@ def plot_delay_rate_by_traffic(df):
         df.groupby("traffic_level")["delay_risk"]
         .mean()
         .reindex(["Low", "Medium", "High"])
-        * 100
+        .mul(100)
+        .reset_index()
     )
 
-    plt.figure(figsize=(8, 5))
-    plt.bar(delay_rate.index, delay_rate.values)
-    plt.title("Delay Rate by Traffic Level")
-    plt.xlabel("Traffic Level")
-    plt.ylabel("Delay Rate (%)")
-    plt.tight_layout()
-    plt.savefig(os.path.join(FIGURES_DIR, "delay_rate_by_traffic.png"))
-    plt.close()
+    fig, ax = create_figure(figsize=(8, 5))
+    bars = ax.bar(delay_rate["traffic_level"], delay_rate["delay_risk"], width=0.6)
+
+    format_axis(
+        ax,
+        title="Delay Rate by Traffic Level",
+        subtitle="Higher traffic intensity is associated with higher delivery delay risk",
+        xlabel="Traffic Level",
+        ylabel="Delay Rate (%)",
+        y_as_percent=True,
+    )
+
+    annotate_bars(ax, fmt="{:.1f}", suffix="%")
+    save_figure(fig, os.path.join(FIGURES_DIR, "delay_rate_by_traffic.png"))
 
 
 def plot_correlation_matrix(df):
@@ -167,15 +211,34 @@ def plot_correlation_matrix(df):
 
     corr = numeric_df.corr()
 
-    plt.figure(figsize=(8, 6))
-    plt.imshow(corr, interpolation="nearest", aspect="auto")
-    plt.xticks(range(len(corr.columns)), corr.columns, rotation=45, ha="right")
-    plt.yticks(range(len(corr.columns)), corr.columns)
-    plt.colorbar()
-    plt.title("Correlation Matrix")
-    plt.tight_layout()
-    plt.savefig(os.path.join(FIGURES_DIR, "correlation_matrix.png"))
-    plt.close()
+    fig, ax = create_figure(figsize=(9, 7))
+    im = ax.imshow(corr, aspect="auto")
+
+    ax.set_xticks(range(len(corr.columns)))
+    ax.set_yticks(range(len(corr.columns)))
+    ax.set_xticklabels(corr.columns, rotation=35, ha="right")
+    ax.set_yticklabels(corr.columns)
+
+    for i in range(len(corr.index)):
+        for j in range(len(corr.columns)):
+            ax.text(
+                j,
+                i,
+                f"{corr.iloc[i, j]:.2f}",
+                ha="center",
+                va="center",
+                fontsize=9,
+                color="#1F1F1F",
+            )
+
+    format_axis(
+        ax,
+        title="Correlation Matrix",
+        subtitle="Relationship between core operational and delay-related variables",
+    )
+
+    fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+    save_figure(fig, os.path.join(FIGURES_DIR, "correlation_matrix.png"))
 
 
 def run_eda():
