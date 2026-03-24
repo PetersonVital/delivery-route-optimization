@@ -41,6 +41,16 @@ The main goals of this project are:
 - Jupyter Notebook
 - Matplotlib
 
+## Current Progress
+
+The initial repository structure is complete, and the first Python script for delivery data simulation has been added.
+
+Implemented so far:
+
+- Repository folder organization
+- Initial project documentation
+- Delivery data simulation script (`src/data_generation.py`)
+
 ## Project Structure
 
 ```text
@@ -50,6 +60,7 @@ delivery-route-optimization/
 │   └── processed/
 ├── notebooks/
 ├── src/
+│   └── data_generation.py
 ├── outputs/
 │   ├── figures/
 │   ├── maps/
@@ -64,7 +75,7 @@ delivery-route-optimization/
 The project is structured in six main stages:
 
 1. **Data Simulation**  
-   Create a synthetic delivery dataset with variables such as city, distance, estimated time, delivery status, and operational cost.
+   Create a synthetic delivery dataset with variables such as city, distance, estimated time, traffic level, delivery status, and operational cost.
 
 2. **Exploratory Data Analysis**  
    Analyze patterns related to travel distance, delivery time, cost distribution, and potential delay factors.
@@ -81,6 +92,26 @@ The project is structured in six main stages:
 6. **Business Impact Analysis**  
    Compare original and optimized scenarios using operational and financial metrics.
 
+## Initial Simulated Dataset
+
+The first version of the simulated dataset is designed to include variables such as:
+
+- `delivery_id`
+- `city`
+- `state`
+- `latitude`
+- `longitude`
+- `distance_km`
+- `estimated_time_min`
+- `traffic_level`
+- `vehicle_type`
+- `delivery_window`
+- `package_weight_kg`
+- `fuel_cost_brl`
+- `delivery_status`
+- `delay_risk`
+- `original_cost_brl`
+
 ## Expected Outputs
 
 This project is expected to include:
@@ -96,15 +127,27 @@ This project is expected to include:
 
 This case study demonstrates how analytics can support logistics and operations teams by improving route efficiency, reducing unnecessary transportation costs, helping prioritize critical deliveries, and enabling more data-driven operational decisions.
 
+## How to Run
+
+After cloning the repository, install the dependencies listed in `requirements.txt`.
+
+The first implementation step is the delivery data simulation script located at:
+
+```text
+src/data_generation.py
+```
+
+This script is responsible for generating the initial synthetic delivery dataset.
+
 ## Project Status
 
 **In progress**
 
-The repository structure and documentation are being set up. The next steps are data simulation, exploratory analysis, route optimization, and predictive modeling.
+The repository structure and the first implementation step are complete. The next stages are exploratory data analysis, route optimization, and predictive modeling.
 
 ## Next Steps
 
-- Build the simulated delivery dataset
+- Generate the first simulated delivery dataset
 - Perform exploratory data analysis
 - Implement route optimization with OR-Tools
 - Generate route maps and comparative metrics
