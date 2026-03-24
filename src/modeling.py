@@ -14,6 +14,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
 
+from chart_utils import create_figure, format_axis, annotate_barh, save_figure
+
 
 INPUT_DATA_PATH = "data/processed/deliveries_cleaned.csv"
 FIGURES_DIR = "outputs/figures"
@@ -118,15 +120,35 @@ def save_classification_outputs(y_test, y_pred):
 
 
 def plot_confusion_matrix(cm):
-    plt.figure(figsize=(6, 5))
-    plt.imshow(cm, interpolation="nearest", aspect="auto")
-    plt.xticks([0, 1], ["Predicted On Time", "Predicted Delayed"])
-    plt.yticks([0, 1], ["Actual On Time", "Actual Delayed"])
-    plt.colorbar()
-    plt.title("Confusion Matrix")
-    plt.tight_layout()
-    plt.savefig(CONFUSION_MATRIX_PATH)
-    plt.close()
+    fig, ax = create_figure(figsize=(6, 5))
+    im = ax.imshow(cm, aspect="auto")
+
+    ax.set_xticks([0, 1])
+    ax.set_yticks([0, 1])
+    ax.set_xticklabels(["Predicted On Time", "Predicted Delayed"])
+    ax.set_yticklabels(["Actual On Time", "Actual Delayed"])
+
+    for i in range(cm.shape[0]):
+        for j in range(cm.shape[1]):
+            ax.text(
+                j,
+                i,
+                str(cm[i, j]),
+                ha="center",
+                va="center",
+                fontsize=12,
+                fontweight="semibold",
+                color="#1F1F1F",
+            )
+
+    format_axis(
+        ax,
+        title="Confusion Matrix",
+        subtitle="Classification results for delivery delay prediction",
+    )
+
+    fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+    save_figure(fig, CONFUSION_MATRIX_PATH)
 
 
 def get_feature_names(preprocessor, numeric_features, categorical_features):
@@ -138,6 +160,34 @@ def get_feature_names(preprocessor, numeric_features, categorical_features):
 def plot_feature_importance(pipeline, numeric_features, categorical_features):
     preprocessor = pipeline.named_steps["preprocessor"]
     model = pipeline.named_steps["model"]
+
+    feature_names = get_feature_names(preprocessor, numeric_features, categorical_features)
+    importances = model.feature_importances_
+
+    feature_importance_df = pd.DataFrame(
+        {
+            "feature": feature_names,
+            "importance": importances,
+        }
+    ).sort_values("importance", ascending=False)
+
+    top_features = feature_importance_df.head(10).sort_values("importance", ascending=True)
+
+    fig, ax = create_figure(figsize=(10, 6))
+    bars = ax.barh(top_features["feature"], top_features["importance"], height=0.65)
+
+    format_axis(
+        ax,
+        title="Top 10 Feature Importances",
+        subtitle="Most relevant variables for delivery delay prediction",
+        xlabel="Importance Score",
+        ylabel="Feature",
+    )
+
+    annotate_barh(ax, fmt="{:.3f}")
+    save_figure(fig, FEATURE_IMPORTANCE_PATH)
+
+    return feature_importance_df
 
     feature_names = get_feature_names(preprocessor, numeric_features, categorical_features)
     importances = model.feature_importances_
