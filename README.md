@@ -34,22 +34,24 @@ The main goals of this project are:
 - Python
 - Pandas
 - NumPy
+- Matplotlib
 - Plotly
 - Folium
 - Google OR-Tools
 - scikit-learn
 - Jupyter Notebook
-- Matplotlib
 
 ## Current Progress
 
-The initial repository structure is complete, and the first Python script for delivery data simulation has been added.
+The initial repository structure is complete, and the first implementation stage of the project has already started.
 
 Implemented so far:
 
 - Repository folder organization
 - Initial project documentation
 - Delivery data simulation script (`src/data_generation.py`)
+- Exploratory data analysis script (`src/eda.py`)
+- Processed dataset and output generation structure
 
 ## Project Structure
 
@@ -60,7 +62,8 @@ delivery-route-optimization/
 │   └── processed/
 ├── notebooks/
 ├── src/
-│   └── data_generation.py
+│   ├── data_generation.py
+│   └── eda.py
 ├── outputs/
 │   ├── figures/
 │   ├── maps/
@@ -112,6 +115,19 @@ The first version of the simulated dataset is designed to include variables such
 - `delay_risk`
 - `original_cost_brl`
 
+## Current Analytical Outputs
+
+The exploratory analysis stage is designed to generate:
+
+- A cleaned dataset in `data/processed/`
+- Summary operational metrics
+- City-level performance metrics
+- Distance distribution chart
+- Average estimated time by traffic level
+- Average cost by vehicle type
+- Delay rate by traffic level
+- Correlation matrix for numerical variables
+
 ## Expected Outputs
 
 This project is expected to include:
@@ -131,19 +147,23 @@ This case study demonstrates how analytics can support logistics and operations 
 
 After cloning the repository, install the dependencies listed in `requirements.txt`.
 
-The first implementation step is the delivery data simulation script located at:
+Current implementation files:
 
 ```text
 src/data_generation.py
+src/eda.py
 ```
 
-This script is responsible for generating the initial synthetic delivery dataset.
+Main execution flow:
+
+1. Run the data simulation script to generate the raw delivery dataset
+2. Run the exploratory data analysis script to clean the data and generate metrics and visual outputs
 
 ## Project Status
 
 **In progress**
 
-The repository structure and the first implementation step are complete. The next stages are exploratory data analysis, route optimization, and predictive modeling.
+The repository structure, data simulation step, and exploratory analysis stage are already defined. The next steps are route optimization, geospatial visualization, and predictive modeling.
 
 ## Next Steps
 
