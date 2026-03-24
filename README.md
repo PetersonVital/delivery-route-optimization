@@ -6,44 +6,40 @@ An end-to-end logistics analytics project focused on reducing delivery distance,
 
 This project simulates a delivery operation and applies analytics, optimization, and machine learning techniques to improve decision-making in last-mile logistics.
 
-The solution is designed to answer a practical business question:
+The main business question behind this project is:
 
-**How can route optimization reduce delivery distance, time, and cost while helping identify deliveries at higher risk of delay?**
+**How can route optimization reduce delivery distance, delivery time, and operational cost while helping identify deliveries at higher risk of delay?**
 
 ## Business Problem
 
-Delivery operations often face inefficiencies caused by poorly planned routes, unnecessary travel distance, traffic-related delays, and rising transportation costs.
+Delivery operations often face inefficiencies caused by poor route planning, unnecessary travel distance, traffic-related delays, and increasing transportation costs.
 
-In real business scenarios, these inefficiencies can lead to:
-- higher fuel and operational expenses,
-- lower service reliability,
-- delayed deliveries,
-- and reduced customer satisfaction.
+In real business environments, these inefficiencies can lead to higher operational expenses, lower service reliability, delayed deliveries, and reduced customer satisfaction.
 
-This project addresses that challenge by combining route optimization and delay prediction in a single analytics case study.
+This project addresses that challenge by combining route optimization and delay prediction in a single business-oriented analytics case study.
 
 ## Project Goals
 
 The main goals of this project are:
 
-- simulate a realistic delivery dataset,
-- analyze operational patterns in distance, time, and cost,
-- optimize delivery routes using operations research,
-- compare performance before and after optimization,
-- predict delivery delays using machine learning,
-- and present results with clear business-oriented visualizations.
+- Simulate a realistic delivery dataset
+- Analyze operational patterns in distance, time, and cost
+- Optimize delivery routes using operations research
+- Compare performance before and after optimization
+- Predict delivery delays using machine learning
+- Present results through clear and business-focused visualizations
 
 ## Tech Stack
 
-- **Python**
-- **Pandas**
-- **NumPy**
-- **Plotly**
-- **Folium**
-- **Google OR-Tools**
-- **scikit-learn**
-- **Jupyter Notebook**
-- **Matplotlib**
+- Python
+- Pandas
+- NumPy
+- Plotly
+- Folium
+- Google OR-Tools
+- scikit-learn
+- Jupyter Notebook
+- Matplotlib
 
 ## Project Structure
 
@@ -61,3 +57,68 @@ delivery-route-optimization/
 ├── dashboard/
 ├── requirements.txt
 └── README.md
+```
+
+## Methodology
+
+The project is structured in six main stages:
+
+1. **Data Simulation**  
+   Create a synthetic delivery dataset with variables such as city, distance, estimated time, delivery status, and operational cost.
+
+2. **Exploratory Data Analysis**  
+   Analyze patterns related to travel distance, delivery time, cost distribution, and potential delay factors.
+
+3. **Route Optimization**  
+   Use Google OR-Tools to optimize delivery routes and reduce total distance and operational effort.
+
+4. **Geospatial Visualization**  
+   Build route maps and visual comparisons using Folium and Plotly.
+
+5. **Delay Prediction**  
+   Train a machine learning model to identify deliveries with a higher probability of delay.
+
+6. **Business Impact Analysis**  
+   Compare original and optimized scenarios using operational and financial metrics.
+
+## Expected Outputs
+
+This project is expected to include:
+
+- Delivery route maps before and after optimization
+- Comparison of total distance, time, and cost
+- Operational performance charts
+- Feature importance for delay prediction
+- Confusion matrix and classification metrics
+- Portfolio-ready project documentation
+
+## Business Value
+
+This case study demonstrates how analytics can support logistics and operations teams by improving route efficiency, reducing unnecessary transportation costs, helping prioritize critical deliveries, and enabling more data-driven operational decisions.
+
+## Project Status
+
+**In progress**
+
+The repository structure and documentation are being set up. The next steps are data simulation, exploratory analysis, route optimization, and predictive modeling.
+
+## Next Steps
+
+- Build the simulated delivery dataset
+- Perform exploratory data analysis
+- Implement route optimization with OR-Tools
+- Generate route maps and comparative metrics
+- Train a delay prediction model
+- Create dashboard-ready visual assets
+- Finalize the project for GitHub and LinkedIn presentation
+
+## Author
+
+**Peterson Vital**  
+Mechanical Engineer | Data Analytics | Machine Learning
+
+- LinkedIn: [linkedin.com/in/petersonvital](https://linkedin.com/in/petersonvital)
+
+---
+
+This project is part of my portfolio to showcase applied analytics, logistics optimization, and machine learning for real-world business problems.
