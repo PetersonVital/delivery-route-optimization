@@ -288,7 +288,6 @@ It is especially valuable as a portfolio case because it combines:
 Possible future improvements include:
 
 - multi-vehicle route optimization,
-- delivery capacity constraints,
 - delivery time windows,
 - richer business dashboards,
 - model tuning and expanded evaluation,
